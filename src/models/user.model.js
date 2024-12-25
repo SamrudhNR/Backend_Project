@@ -45,6 +45,7 @@ const userSchema= new mongoose.Schema(
         }
     },{timestamps:true})
 
+// before saving user in db password is encrypted
 userSchema.pre("save",async function(next){
     if(!this.isModified("password")) return next(); // only if password is changed then change it
 

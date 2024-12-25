@@ -2,11 +2,23 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from"bcrypt";
 
+
+// mongoose.connection.on("open", async () => {
+//     try {
+//         const userCollection = mongoose.connection.collection('users');
+//         await userCollection.dropIndex('usernmae_1');  // The problematic index
+//         console.log('Index dropped successfully');
+//     } catch (err) {
+//         console.error('Error dropping index:', err);
+//     }
+// });
+
+
 const userSchema= new mongoose.Schema(
     {
-        usernmae:{
+        username:{
             type:String,
-            reruired:true,
+            required:true,
             unique:true,
             lowercase:true,
             trim :true,
@@ -16,7 +28,7 @@ const userSchema= new mongoose.Schema(
             type:String,
             required:true,
             unique:true,
-            lowercaase:true,
+            lowercase:true,
             trim:true
         },
         fullname:{

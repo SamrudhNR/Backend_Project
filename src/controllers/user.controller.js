@@ -1,7 +1,7 @@
 import {asyncHandler} from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js";
-import {User} from "../models/User.js";
-import {uploadOnCloudinary} from "./utils/cloudinary.js";
+import {User} from "../models/user.model.js";
+import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 
 
@@ -14,13 +14,14 @@ const registerUser= asyncHandler(async(req,res)=>{
 
     const {fullname, email, username, password}=req.body
     console.log("email: ",email)
+    console.log("username: ",username)
     
     if([fullname, email, username, password].some((field)=> field.trim()===""))
         {
         throw new ApiError(400,"All fields is reqired")
     }
 
-    const existUser= User.findOne({
+    const existUser=await  User.findOne({
         $or:[{username}, {email}]
     })
     if(existUser){
@@ -28,6 +29,7 @@ const registerUser= asyncHandler(async(req,res)=>{
     }
 
     // middleware(multer) give certain access like files
+    console.log('req.files=',req.files)
     const avatarLocalPath= req.files?.avatar[0]?.path;
     const CoverImageLocalPath= req.files?.coverImage[0]?.path;
 
@@ -35,7 +37,7 @@ const registerUser= asyncHandler(async(req,res)=>{
         throw new ApiError(400,"Avatar is required")
     }
 
-    const avatar= await uploadOnCloudinary(avatarLocalPath)
+    const avatar= await uploadOnCloudinary(avatarLocalPath) // returns object
     const coverImage= await uploadOnCloudinary(CoverImageLocalPath)
 
     if(!avatar){
